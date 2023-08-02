@@ -78,11 +78,9 @@ impl AvailableOnnxModel {
                 "Downloading file, please wait....",
             );
 
-            let resp = ureq::get(url)
-                .timeout(Duration::from_secs(180)) // 3 minutes
-                .call()
+            let resp = reqwest::blocking::get(url)
                 .map_err(Box::new)
-                .map_err(OrtDownloadError::UreqError)?;
+                .map_err(OrtDownloadError::NetworkError)?;
 
             assert!(resp.has("Content-Length"));
             let len = resp

@@ -130,16 +130,14 @@ fn download<P>(source_url: &str, target_file: P)
 where
     P: AsRef<Path>,
 {
-    let resp = ureq::get(source_url)
-        .timeout(std::time::Duration::from_secs(300))
-        .call()
+    let resp = reqwest::blocking::get(source_url)
         .unwrap_or_else(|err| panic!("ERROR: Failed to download {}: {:?}", source_url, err));
 
-    let len = resp
-        .header("Content-Length")
-        .and_then(|s| s.parse::<usize>().ok())
+    let len = resp.headers()["Content-Length"]
+        .to_str()
+        .map(|s| s.parse::<usize>().unwrap())
         .unwrap();
-    let mut reader = resp.into_reader();
+    let mut reader = resp;
     // FIXME: Save directly to the file
     let mut buffer = vec![];
     let read_len = reader.read_to_end(&mut buffer).unwrap();

@@ -305,11 +305,9 @@ fn get_imagenet_labels() -> Result<Vec<String>, OrtDownloadError> {
     if !labels_path.exists() {
         let url = "https://s3.amazonaws.com/onnx-model-zoo/synset.txt";
         println!("Downloading {:?} to {:?}...", url, labels_path);
-        let resp = ureq::get(url)
-            .timeout(Duration::from_secs(180)) // 3 minutes
-            .call()
+        let resp = reqwest::blocking::get(url)
             .map_err(Box::new)
-            .map_err(OrtDownloadError::UreqError)?;
+            .map_err(OrtDownloadError::NetworkError)?;
 
         assert!(resp.has("Content-Length"));
         let len = resp

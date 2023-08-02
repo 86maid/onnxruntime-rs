@@ -27,17 +27,20 @@ thiserror = "1.0"
 tracing = "0.1"
 
 # Enabled with 'model-fetching' feature
-ureq = { version = "2.1", optional = true }
+reqwest = { version = "0.11.18", features = ["blocking"], optional = true }
 
 [dev-dependencies]
 image = "0.23"
-test-env-log = { version = "0.2", default-features = false, features = ["trace"] }
+test-env-log = { version = "0.2", default-features = false, features = [
+    "trace",
+] }
 tracing-subscriber = "0.2"
-ureq = "2.1"
+reqwest = { version = "0.11.18", features = ["blocking"] }
+
 
 [features]
 # Fetch model from ONNX Model Zoo (https://github.com/onnx/models)
-model-fetching = ["ureq"]
+model-fetching = ["reqwest"]
 # Disable build script; used for https://docs.rs
 disable-sys-build-script = ["onnxruntime-sys/disable-sys-build-script"]
 generate-bindings = ["onnxruntime-sys/generate-bindings"]
